@@ -79,6 +79,8 @@ public class XPCC3Generator extends Generator {
             r = Link.union(l1, l2);
         }
 
+//        setIncrementalLinkCount(cct, r.size());
+
         cct.setLK(r);
         return r;
     }
@@ -106,6 +108,8 @@ public class XPCC3Generator extends Generator {
             Link l2 = generate(children.getValue1(), binding);
             r = Link.cartesian(l1, l2);
         }
+
+//        setIncrementalLinkCount(cct, r.size());
 
         cct.setLK(r);
         return r;
@@ -135,6 +139,8 @@ public class XPCC3Generator extends Generator {
             r = Link.cartesian(Link.flip(l1), l2);
         }
 
+//        setIncrementalLinkCount(cct, r.size());
+
         cct.setLK(r);
         return r;
     }
@@ -148,6 +154,8 @@ public class XPCC3Generator extends Generator {
         Link s = generate(cct.getChildren().get(0).getCCT(), binding);
         Link r = Link.flip(s);
 
+//        setIncrementalLinkCount(cct, r.size());
+
         cct.setLK(r);
         return r;
     }
@@ -157,8 +165,8 @@ public class XPCC3Generator extends Generator {
         QuantifiedFormula f = (QuantifiedFormula) cct.getFormula();
         Variable v = f.getVariable();
         if (!cct.isToBeTotallyRecomputed()) {
-            Link l = Link.copy(cct.getLK());
-            Link r = Link.of(cct.getTV() ? Link.Type.SAT : Link.Type.VIO);
+            Link l = cct.getLK();
+            Link r = l == null ? Link.of(cct.getTV() ? Link.Type.SAT : Link.Type.VIO) : Link.copy(l);
 
             int incre = 0;
 
@@ -174,8 +182,9 @@ public class XPCC3Generator extends Generator {
                     incre += tmp.size();
                 }
             }
-            r.unionWith(l);
             cct.setLK(r);
+
+//            setIncrementalLinkCount(cct, incre);
 
 //            long start = System.nanoTime();
             cct.clearNewlyAdded();
@@ -206,6 +215,8 @@ public class XPCC3Generator extends Generator {
                 }
             }
 
+//            setIncrementalLinkCount(cct, incre);
+
             cct.setLK(r);
             return r;
         }
@@ -217,7 +228,7 @@ public class XPCC3Generator extends Generator {
         Variable v = f.getVariable();
         if (!cct.isToBeTotallyRecomputed()) {
             Link l = Link.copy(cct.getLK());
-            Link r = Link.of(cct.getTV() ? Link.Type.SAT : Link.Type.VIO);
+            Link r = l == null ? Link.of(cct.getTV() ? Link.Type.SAT : Link.Type.VIO) : l;
 
             int incre = 0;
 
@@ -233,7 +244,8 @@ public class XPCC3Generator extends Generator {
                     incre += tmp.size();
                 }
             }
-            r.unionWith(l);
+
+//            setIncrementalLinkCount(cct, incre);
 
             cct.setLK(r);
 
@@ -266,6 +278,8 @@ public class XPCC3Generator extends Generator {
                 }
             }
 
+//            setIncrementalLinkCount(cct, incre);
+
             cct.setLK(r);
             return r;
         }
@@ -276,6 +290,7 @@ public class XPCC3Generator extends Generator {
         cct.unsetToBeTotallyRecomputed();
         cct.bind(binding);
         Link r = Link.of(cct.getTV() ? Link.Type.SAT : Link.Type.VIO);
+//        setIncrementalLinkCount(cct, 0);
         cct.setLK(r);
         return r;
     }

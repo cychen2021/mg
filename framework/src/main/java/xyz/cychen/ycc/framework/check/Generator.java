@@ -5,6 +5,17 @@ import xyz.cychen.ycc.framework.Link;
 import xyz.cychen.ycc.framework.cct.*;
 
 public abstract class Generator {
+//    public void clearIncrementalLinkCount(CCT cct) {
+//        cct.setIncrementalCount(0);
+//        for (CCT.Arrow arrow : cct.getChildren()) {
+//            clearIncrementalLinkCount(arrow.getCCT());
+//        }
+//    }
+
+//    public void setIncrementalLinkCount(CCT cct, int incrementalTotal) {
+//        cct.setIncrementalCount(Math.max(1, incrementalTotal));
+//    }
+
     public Link generate(CCT cct, Binding binding) {
         if (cct instanceof AndCCT andCCT) {
             return visit(andCCT, binding);

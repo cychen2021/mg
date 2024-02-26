@@ -33,24 +33,4 @@ public class BFuncCCT extends CCT{
     public List<Arrow> getChildren() {
         return emptyChildren;
     }
-
-    @Override
-    public String toStringRepr(boolean tagSCCT) {
-        var sb = new StringBuilder();
-        sb.append("(");
-        sb.append("\"");
-        if (tagSCCT && this.isSCCT()) {
-            sb.append("SCCT ");
-        }
-        if (this.tv) {
-            sb.append("T ");
-        } else {
-            sb.append("F ");
-        }
-        sb.append("bfunc ");
-        sb.append(((BFuncFormula) this.formula).getFuncName());
-        sb.append("\"");
-        sb.append(")");
-        return sb.toString();
-    }
 }

@@ -41,6 +41,7 @@ public class PCCGenerator extends Generator {
     public Link visit(AndCCT cct, Binding binding) {
         var children = binaryHelper(cct);
         if (!isAffected(children.getValue0()) && !isAffected(children.getValue1())) {
+//            cct.setIncrementalCount(0);
 
             return cct.getLK();
         }
@@ -50,11 +51,15 @@ public class PCCGenerator extends Generator {
             if (tvs.getValue0() && tvs.getValue1()) {
                 Link nLK = Link.cartesian(nsub, children.getValue1().getLK());
 
+//                setIncrementalLinkCount(cct, nLK.size());
+
                 cct.setLK(nLK);
                 return nLK;
             }
             else if (!tvs.getValue0() && !tvs.getValue1()) {
                 Link nLK = Link.union(nsub, children.getValue1().getLK());
+
+//                setIncrementalLinkCount(cct, nLK.size());
 
                 cct.setLK(nLK);
                 return nLK;
@@ -62,11 +67,15 @@ public class PCCGenerator extends Generator {
             else if (tvs.getValue0() && !tvs.getValue1()) {
                 Link nLK = Link.copy(children.getValue1().getLK());
 
+//                setIncrementalLinkCount(cct, nLK.size());
+
                 cct.setLK( nLK);
                 return nLK;
             }
             else {
                 Link nLK = Link.copy(nsub);
+
+//                setIncrementalLinkCount(cct, nLK.size());
 
                 cct.setLK( nLK);
                 return nLK;
@@ -78,11 +87,15 @@ public class PCCGenerator extends Generator {
             if (tvs.getValue0() && tvs.getValue1()) {
                 Link nLK = Link.cartesian(children.getValue0().getLK(), nsub);
 
+//                setIncrementalLinkCount(cct, nLK.size());
+
                 cct.setLK( nLK);
                 return nLK;
             }
             else if (!tvs.getValue0() && !tvs.getValue1()) {
                 Link nLK = Link.union(children.getValue0().getLK(), nsub);
+
+//                setIncrementalLinkCount(cct, nLK.size());
 
                 cct.setLK( nLK);
                 return nLK;
@@ -90,11 +103,15 @@ public class PCCGenerator extends Generator {
             else if (tvs.getValue0() && !tvs.getValue1()) {
                 Link nLK = Link.copy(nsub);
 
+//                setIncrementalLinkCount(cct, nLK.size());
+
                 cct.setLK( nLK);
                 return nLK;
             }
             else {
                 Link nLK = Link.copy(children.getValue0().getLK());
+
+//                setIncrementalLinkCount(cct, nLK.size());
 
                 cct.setLK( nLK);
                 return nLK;
@@ -111,6 +128,8 @@ public class PCCGenerator extends Generator {
     public Link visit(OrCCT cct, Binding binding) {
         var children = binaryHelper(cct);
         if (!isAffected(children.getValue0()) && !isAffected(children.getValue1())) {
+//            cct.setIncrementalCount(0);
+
             return cct.getLK();
         }
         else if (isAffected(children.getValue0()) && !isAffected(children.getValue1())) {
@@ -119,11 +138,15 @@ public class PCCGenerator extends Generator {
             if (tvs.getValue0() && tvs.getValue1()) {
                 Link nLK = Link.union(nsub, children.getValue1().getLK());
 
+//                setIncrementalLinkCount(cct, nLK.size());
+
                 cct.setLK( nLK);
                 return nLK;
             }
             else if (!tvs.getValue0() && !tvs.getValue1()) {
                 Link nLK = Link.cartesian(nsub, children.getValue1().getLK());
+
+//                setIncrementalLinkCount(cct, nLK.size());
 
                 cct.setLK( nLK);
                 return nLK;
@@ -131,11 +154,15 @@ public class PCCGenerator extends Generator {
             else if (tvs.getValue0() && !tvs.getValue1()) {
                 Link nLK = Link.copy(nsub);
 
+//                setIncrementalLinkCount(cct, nLK.size());
+
                 cct.setLK( nLK);
                 return nLK;
             }
             else {
                 Link nLK = Link.copy(children.getValue1().getLK());
+
+//                setIncrementalLinkCount(cct, nLK.size());
 
                 cct.setLK( nLK);
                 return nLK;
@@ -147,11 +174,15 @@ public class PCCGenerator extends Generator {
             if (tvs.getValue0() && tvs.getValue1()) {
                 Link nLK = Link.union(children.getValue0().getLK(), nsub);
 
+//                setIncrementalLinkCount(cct, nLK.size());
+
                 cct.setLK( nLK);
                 return nLK;
             }
             else if (!tvs.getValue0() && !tvs.getValue1()) {
                 Link nLK = Link.cartesian(children.getValue0().getLK(), nsub);
+
+//                setIncrementalLinkCount(cct, nLK.size());
 
                 cct.setLK( nLK);
                 return nLK;
@@ -159,11 +190,15 @@ public class PCCGenerator extends Generator {
             else if (tvs.getValue0() && !tvs.getValue1()) {
                 Link nLK = Link.copy(children.getValue0().getLK());
 
+//                setIncrementalLinkCount(cct, nLK.size());
+
                 cct.setLK( nLK);
                 return nLK;
             }
             else {
                 Link nLK = Link.copy(nsub);
+
+//                setIncrementalLinkCount(cct, nLK.size());
 
                 cct.setLK( nLK);
                 return nLK;
@@ -180,6 +215,8 @@ public class PCCGenerator extends Generator {
     public Link visit(ImpliesCCT cct, Binding binding) {
         var children = binaryHelper(cct);
         if (!isAffected(children.getValue0()) && !isAffected(children.getValue1())) {
+//            cct.setIncrementalCount(0);
+
             return cct.getLK();
         }
         else if (isAffected(children.getValue0()) && !isAffected(children.getValue1())) {
@@ -188,11 +225,15 @@ public class PCCGenerator extends Generator {
             if (tvs.getValue0() && !tvs.getValue1()) {
                 Link nLK = Link.cartesian(Link.flip(nsub), children.getValue1().getLK());
 
+//                setIncrementalLinkCount(cct, nLK.size());
+
                 cct.setLK( nLK);
                 return nLK;
             }
             else if (!tvs.getValue0() && tvs.getValue1()) {
                 Link nLK = Link.union(Link.flip(nsub), children.getValue1().getLK());
+
+//                setIncrementalLinkCount(cct, nLK.size());
 
                 cct.setLK( nLK);
                 return nLK;
@@ -200,11 +241,15 @@ public class PCCGenerator extends Generator {
             else if (!tvs.getValue0() && !tvs.getValue1()) {
                 Link nLK = Link.flip(nsub);
 
+//                setIncrementalLinkCount(cct, nLK.size());
+
                 cct.setLK( nLK);
                 return nLK;
             }
             else {
                 Link nLK = Link.copy(children.getValue1().getLK());
+
+//                setIncrementalLinkCount(cct, nLK.size());
 
                 cct.setLK( nLK);
                 return nLK;
@@ -216,11 +261,15 @@ public class PCCGenerator extends Generator {
             if (tvs.getValue0() && !tvs.getValue1()) {
                 Link nLK = Link.cartesian(Link.flip(children.getValue0().getLK()), nsub);
 
+//                setIncrementalLinkCount(cct, nLK.size());
+
                 cct.setLK( nLK);
                 return nLK;
             }
             else if (!tvs.getValue0() && tvs.getValue1()) {
                 Link nLK = Link.union(Link.flip(children.getValue0().getLK()), nsub);
+
+//                setIncrementalLinkCount(cct, nLK.size());
 
                 cct.setLK( nLK);
                 return nLK;
@@ -228,11 +277,15 @@ public class PCCGenerator extends Generator {
             else if (!tvs.getValue0() && !tvs.getValue1()) {
                 Link nLK = Link.flip(Link.copy(children.getValue0().getLK()));
 
+//                setIncrementalLinkCount(cct, nLK.size());
+
                 cct.setLK( nLK);
                 return nLK;
             }
             else {
                 Link nLK = Link.copy(nsub);
+
+//                setIncrementalLinkCount(cct, nLK.size());
 
                 cct.setLK( nLK);
                 return nLK;
@@ -248,11 +301,15 @@ public class PCCGenerator extends Generator {
     @Override
     public Link visit(NotCCT cct, Binding binding) {
         if (!isAffected(cct)) {
+//            cct.setIncrementalCount(0);
+
             return cct.getLK();
         }
         else {
             Link subL = generate(cct.getChildren().get(0).getCCT(), binding);
             Link nLK = Link.flip(subL);
+
+//            setIncrementalLinkCount(cct, nLK.size());
 
             cct.setLK( nLK);
             return nLK;
@@ -267,6 +324,7 @@ public class PCCGenerator extends Generator {
         boolean subAf = cct.getFormula().getChildren()[0].isAffected();
         Context ctx = currentChange.getContext();
         if (!setChange && !subAf) {
+            //cct.setIncrementalCount(0);
             return cct.getLK();
         }
         else if (setChange && currentChange instanceof Checker.AddChange && !subAf) {
@@ -285,6 +343,7 @@ public class PCCGenerator extends Generator {
             } else {
                 newLink = Link.copy(oldLink);
             }
+//            setIncrementalLinkCount(cct, r);
             cct.setLK( newLink);
             return newLink;
         }
@@ -304,6 +363,7 @@ public class PCCGenerator extends Generator {
                     incre += nLK.size();
                 }
             }
+//            setIncrementalLinkCount(cct, incre);
             cct.setLK( r);
             return r;
         }
@@ -326,6 +386,7 @@ public class PCCGenerator extends Generator {
                     incre += nLK.size();
                 }
             }
+//            setIncrementalLinkCount(cct, incre);
             cct.setLK( r);
             return r;
         }
@@ -344,6 +405,7 @@ public class PCCGenerator extends Generator {
         boolean subAf = cct.getFormula().getChildren()[0].isAffected();
         Context ctx = currentChange.getContext();
         if (!setChange && !subAf) {
+//            cct.setIncrementalCount(0);
             return cct.getLK();
         }
         else if (setChange && currentChange instanceof Checker.AddChange && !subAf) {
@@ -363,6 +425,8 @@ public class PCCGenerator extends Generator {
             } else {
                 newLink = Link.copy(oldLink);
             }
+
+//            setIncrementalLinkCount(cct, r);
 
             cct.setLK(newLink);
             return newLink;
@@ -384,6 +448,8 @@ public class PCCGenerator extends Generator {
                 }
             }
 
+//            setIncrementalLinkCount(cct, incre);
+
             cct.setLK( r);
             return r;
         }
@@ -407,6 +473,8 @@ public class PCCGenerator extends Generator {
                 }
             }
 
+//            setIncrementalLinkCount(cct, incre);
+
             cct.setLK( r);
             return r;
         }
@@ -420,6 +488,7 @@ public class PCCGenerator extends Generator {
     @Override
     public Link visit(BFuncCCT cct, Binding binding) {
         cct.bind(binding);
+//        setIncrementalLinkCount(cct, 0);
         return cct.getLK();
     }
 }

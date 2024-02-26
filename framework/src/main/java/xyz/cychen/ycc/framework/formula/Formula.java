@@ -1,6 +1,10 @@
 package xyz.cychen.ycc.framework.formula;
 
 import xyz.cychen.ycc.framework.Goal;
+import xyz.cychen.ycc.framework.check.Checker;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class Formula implements Cloneable{
     protected enum FormulaType {
@@ -87,7 +91,88 @@ public abstract class Formula implements Cloneable{
     @Override
     protected abstract Formula clone() throws CloneNotSupportedException;
 
-    public Formula deepClone() throws CloneNotSupportedException {
-        return this.clone();
+    protected EConditionStore posConditions = null;
+    protected EConditionStore negConditions = null;
+
+    public EConditionStore getEConditions(boolean tv) {
+        return tv ? posConditions : negConditions;
+    }
+
+    public abstract void analyzeEConditions();
+
+
+    public static class EConditionStore {
+        private final Set<String> posConditions;
+        private final Set<String> negConditions;
+
+        private EConditionStore sibling;
+
+        public void add(boolean pos, String condition) {
+            if (pos) {
+                posConditions.add(condition);
+            } else {
+                negConditions.add(condition);
+            }
+        }
+
+        public boolean isIrrelevantWith(Checker.Change change) {
+            return !posConditions.contains(change.getTargetSet()) && !negConditions.contains(change.getTargetSet());
+        }
+
+        public boolean hit(Checker.Change change) {
+            if (change instanceof Checker.AddChange) {
+                if (posConditions.contains(change.getTargetSet())) {
+                    return true;
+                }
+                if (sibling != null) {
+                    if (sibling.posConditions.contains(change.getTargetSet())) {
+                        return true;
+                    }
+                    return !negConditions.contains(change.getTargetSet()) && !sibling.negConditions.contains(change.getTargetSet());
+                }
+                return !negConditions.contains(change.getTargetSet());
+            } else if (change instanceof Checker.DelChange) {
+                if (negConditions.contains(change.getTargetSet())) {
+                    return true;
+                }
+                if (sibling != null) {
+                    if (sibling.negConditions.contains(change.getTargetSet())) {
+                        return true;
+                    }
+                    return !posConditions.contains(change.getTargetSet()) && !sibling.posConditions.contains(change.getTargetSet());
+                }
+                return !posConditions.contains(change.getTargetSet());
+            } else {
+                throw new RuntimeException();
+            }
+        }
+
+        private EConditionStore(Set<String> posConditions, Set<String> negConditions, EConditionStore sibling) {
+            this.posConditions = posConditions;
+            this.negConditions = negConditions;
+            this.sibling = sibling;
+        }
+
+        public EConditionStore() {
+            this(new HashSet<>(), new HashSet<>(), null);
+        }
+
+        public EConditionStore(EConditionStore sibling) {
+            this(new HashSet<>(), new HashSet<>(), sibling);
+        }
+
+        public void linkTo(EConditionStore sibling) {
+            this.sibling = sibling;
+        }
+
+        public EConditionStore union(EConditionStore other) {
+            Set<String> pos = new HashSet<>(posConditions.size() + other.posConditions.size());
+            pos.addAll(posConditions);
+            pos.addAll(other.posConditions);
+            Set<String> neg = new HashSet<>(negConditions.size() + other.negConditions.size());
+            neg.addAll(negConditions);
+            neg.addAll(other.negConditions);
+            return new EConditionStore(pos, neg, null);
+        }
     }
 }

@@ -8,7 +8,54 @@ import java.util.*;
 
 public abstract class CCT {
 
+//    public static final String PROP_TV = "truthValue";
+//    public static final String PROP_LK = "link";
+//    public static final String PROP_OD0 = "outdated0";
+//    public static final String PROP_OD1 = "outdated1";
+//    public static final String PROP_CHR = "changeRecord";
+//    public static final String PROP_CHRC = "changeCount";
+
+//    protected boolean recompMarker = false;
+    private boolean scct = false;
+
+    public boolean isSCCT() {
+        return scct;
+    }
+
+    public void setSCCT(boolean scct) {
+        this.scct = scct;
+    }
+
+    private boolean anchor = false;
+    private boolean onPreviousAnchor = false;
+
+    public boolean isAnchor() {
+        return anchor;
+    }
+
+    public void setAnchor(boolean anchor) {
+        this.anchor = anchor;
+    }
+
+    public boolean isOnPreviousAnchor() {
+        return onPreviousAnchor;
+    }
+
+    public void setOnPreviousAnchor(boolean onPreviousAnchor) {
+        this.onPreviousAnchor = onPreviousAnchor;
+    }
+
     protected boolean toBeTotallyRecomputed = false;
+
+//    protected long incrementalCount = 0;
+//
+//    public long getIncrementalCount() {
+//        return incrementalCount;
+//    }
+//
+//    public void setIncrementalCount(long incrementalCount) {
+//        this.incrementalCount = incrementalCount;
+//    }
 
     public void unsetToBeTotallyRecomputed() {
         toBeTotallyRecomputed = false;
@@ -54,6 +101,16 @@ public abstract class CCT {
         return outdated[1];
     }
 
+    private boolean newlyAddedForEPCC = false;
+
+    public boolean isNewlyAddedForEPCC() {
+        return newlyAddedForEPCC;
+    }
+
+    public void setNewlyAddedForEPCC(boolean newlyAddedForEPCC) {
+        this.newlyAddedForEPCC = newlyAddedForEPCC;
+    }
+
     protected Link link = null;
 
     public Link getLK() {
@@ -89,28 +146,6 @@ public abstract class CCT {
 //    public boolean isAffected() {
 //        return affected;
 //    }
-
-    protected boolean scct = false;
-
-    public void setSCCT() {
-        this.scct = true;
-    }
-
-    public boolean isSCCT() {
-        return this.scct;
-    }
-
-    public void clearSCCT() {
-        this.scct = false;
-        var children = this.getChildren();
-        if (children != null && !children.isEmpty()) {
-            for (var child : children) {
-                child.getCCT().clearSCCT();
-            }
-        }
-    }
-
-    public abstract String toStringRepr(boolean tagSCCT);
 
     protected Boolean tv;
 
@@ -200,7 +235,17 @@ public abstract class CCT {
         return getFormula().isAffected();
     }
 
-//    public boolean containsProperty(String key) {
+    private boolean affectedForEPCC;
+
+    public boolean isAffectedForEPCC() {
+        return affectedForEPCC;
+    }
+
+    public void setAffectedForEPCC(boolean affectedForEPCC) {
+        this.affectedForEPCC = affectedForEPCC;
+    }
+
+    //    public boolean containsProperty(String key) {
 //        return properties.containsKey(key);
 //    }
 
@@ -221,4 +266,8 @@ public abstract class CCT {
 //    }
 
     public abstract List<Arrow> getChildren();
+
+    public Formula.EConditionStore getEConditions() {
+        return formula.getEConditions(tv);
+    }
 }

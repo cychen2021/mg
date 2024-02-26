@@ -19,60 +19,13 @@ public class XYZChecker extends Checker {
     public XYZChecker(Map<String, Pair<Boolean, Formula>> constraints) {
         super(new ECCBuilder(), new ECCEvaluator(), new XYZGenerator(), constraints);
         constraints.forEach((k, v) -> {
-            if (v.getValue0() != null && v.getValue0()) {
+            if (v.getValue0()) {
                 deducer.deduce(v.getValue1(), Goal.VIO);
             }
-            else if (v.getValue0() != null) {
+            else {
                 deducer.deduce(v.getValue1(), Goal.SAT);
             }
         });
-    }
-
-    @Override
-    protected Map<String, Pair<Boolean, Link>> checkInner(String targetSet) {
-        Map<String, Pair<Boolean, Link>> result = new HashMap<>();
-
-        Set<String> related = setToConstraints.get(targetSet);
-        for (String constraintID: related) {
-            Formula f = constraints.get(constraintID).getValue1();
-
-            // DEBUG: BEGIN
-            long time0 = System.nanoTime();
-            // DEBUG: END
-
-            CCT cct = builder.build(f);
-
-            // DEBUG: BEGIN
-            long time1 = System.nanoTime();
-            // DEBUG: END
-
-            boolean truthValue = evaluator.evaluate(cct, new Binding());
-
-            // DEBUG: BEGIN
-            long time2 = System.nanoTime();
-            // DEBUG: END
-
-            Link link;
-            if (constraints.get(constraintID).getValue0() == null || truthValue != constraints.get(constraintID).getValue0()) {
-                link = generator.generate(cct, new Binding());
-            }
-            else {
-                link = Link.of(truthValue ? Link.Type.SAT : Link.Type.VIO);
-            }
-
-            // DEBUG: BEGIN
-            long time3 = System.nanoTime();
-            // DEBUG: END
-
-            result.put(constraintID, Pair.with(truthValue, link));
-
-            // DEBUG: BEGIN
-            updateTimeCount(constraintID, time0, time1, time2, time3);
-            // DEBUG: END
-            this.cct = cct;
-        }
-
-        return result;
     }
 
     @Override
@@ -103,7 +56,7 @@ public class XYZChecker extends Checker {
             // DEBUG: END
 
             Link link;
-            if (constraints.get(constraintID).getValue0() == null || truthValue != constraints.get(constraintID).getValue0()) {
+            if (truthValue != constraints.get(constraintID).getValue0()) {
                 link = generator.generate(cct, new Binding());
             }
             else {
@@ -118,8 +71,8 @@ public class XYZChecker extends Checker {
 
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time3);
+//            updateMeasure(constraintID, cct);
             // DEBUG: END
-            this.cct = cct;
         }
 
         return result;
@@ -153,7 +106,7 @@ public class XYZChecker extends Checker {
             // DEBUG: END
 
             Link link;
-            if (constraints.get(constraintID).getValue0() == null || truthValue != constraints.get(constraintID).getValue0()) {
+            if (truthValue != constraints.get(constraintID).getValue0()) {
                 link = generator.generate(cct, new Binding());
             }
             else {
@@ -168,8 +121,8 @@ public class XYZChecker extends Checker {
 
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time3);
+//            updateMeasure(constraintID, cct);
             // DEBUG: END
-            this.cct = cct;
         }
 
         return result;

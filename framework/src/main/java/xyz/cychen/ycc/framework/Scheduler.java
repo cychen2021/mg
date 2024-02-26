@@ -13,8 +13,6 @@ public abstract class Scheduler {
 
     protected final List<Pair<String, Link>> result;
 
-    protected List<Pair<String, Link>> lastResult;
-
     protected final Checker checker;
 
     protected final Map<String, Pair<ContextSet, Filter>> patterns;
@@ -83,10 +81,6 @@ public abstract class Scheduler {
         });
     }
 
-    public String getFirstPattern() {
-        return patterns.keySet().iterator().next();
-    }
-
     public void process(Event event) {
         if (event instanceof IncEvent incEvent) {
             process(incEvent);
@@ -114,17 +108,11 @@ public abstract class Scheduler {
         var checkResult =
                 checker.check(new Checker.AddChange(setID, context));
         result.addAll(checkResult);
-        lastResult = checkResult;
     }
 
     private void checkDel(String setID, Context context) {
         var checkResult =
                 checker.check(new Checker.DelChange(setID, context));
         result.addAll(checkResult);
-        lastResult = checkResult;
-    }
-
-    public List<Pair<String, Link>> getLastResult() {
-        return lastResult;
     }
 }

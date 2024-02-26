@@ -6,7 +6,6 @@ import xyz.cychen.ycc.framework.cct.*;
 public class XPCC1Marker {
     public void mark(CCT cct, int chrono) {
         cct.setChrono(chrono);
-        cct.setSCCT();
         if (cct instanceof AndCCT ncct) {
             visit(ncct, chrono);
         }

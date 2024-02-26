@@ -22,14 +22,6 @@ public final class Link implements Cloneable{
         this.type = type;
     }
 
-    public boolean getTruth() {
-        return type == Type.SAT;
-    }
-
-    public List<Binding> getBindings() {
-        return bindings;
-    }
-
     public Type getType() {
         return type;
     }
@@ -181,7 +173,7 @@ public final class Link implements Cloneable{
     public List<String> toStrings() {
         ArrayList<String> result = new ArrayList<>(bindings.size());
         bindings.forEach(b -> result.add("("+type+":"+b+")"));
-        return result;
+        return result.stream().sorted().toList();
     }
 
     @Override

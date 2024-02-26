@@ -10,6 +10,7 @@ public class ECCGeneratorForPCC extends ECCGenerator {
     @Override
     public Link generate(CCT cct, Binding binding) {
         Link r = super.generate(cct, binding);
+//        setIncrementalLinkCount(cct, r.size());
         return r;
     }
 }

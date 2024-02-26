@@ -19,6 +19,26 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class XConCChecker extends Checker implements Closable {
+//    protected void initExecutor(int paraNum, Map<String, Pair<Boolean, Formula>> constraints) {
+//        constraints.forEach((k, v) -> initExecutor(paraNum, v.getValue1()));
+//    }
+
+//    protected void initExecutor(int paraNum, Formula formula) {
+//        if (formula instanceof BinaryFormula) {
+//            initExecutor(paraNum, formula.getChildren()[0]);
+//            initExecutor(paraNum, formula.getChildren()[1]);
+//        }
+//        else if (formula instanceof NotFormula) {
+//            initExecutor(paraNum, formula.getChildren()[0]);
+//        }
+//        else if (formula instanceof QuantifiedFormula qFormula) {
+//            qFormula.setExecutor((ThreadPoolExecutor) Executors.newFixedThreadPool(paraNum));
+//            initExecutor(paraNum, formula.getChildren()[0]);
+//        }
+//    }
+
+//    protected Map<Integer, Map<String, Formula>> threadToFormula;
+
     protected ThreadPoolExecutor executor;
 
     public XConCChecker(int paraNum, Map<String, Pair<Boolean, Formula>> constraints) {
@@ -27,14 +47,17 @@ public class XConCChecker extends Checker implements Closable {
         ((ConCEvaluator) evaluator).setExecutor(executor);
         ((XConCGenerator) generator).setExecutor(executor);
         ((ConCBuilder) builder).setExecutor(executor);
+//        this.evaluator = new ConCEvaluator(executor);
+//        this.generator = new ConCGenerator(executor);
         constraints.forEach((k, v) -> {
-            if (v.getValue0() != null && v.getValue0()) {
+            if (v.getValue0()) {
                 deducer.deduce(v.getValue1(), Goal.VIO);
             }
-            else if (v.getValue0() != null) {
+            else {
                 deducer.deduce(v.getValue1(), Goal.SAT);
             }
         });
+//        initExecutor(paraNum, constraints);
     }
 
     @Override
@@ -74,7 +97,7 @@ public class XConCChecker extends Checker implements Closable {
             // DEBUG: END
 
             Link link;
-            if (constraints.get(constraintID).getValue0() == null || truthValue != constraints.get(constraintID).getValue0()) {
+            if (truthValue != constraints.get(constraintID).getValue0()) {
                 link = generator.generate(cct, new Binding());
             }
             else {
@@ -89,8 +112,8 @@ public class XConCChecker extends Checker implements Closable {
 
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time3);
+//            updateMeasure(constraintID, cct);
             // DEBUG: END
-            this.cct = cct;
         }
 
         return result;
@@ -124,7 +147,7 @@ public class XConCChecker extends Checker implements Closable {
             // DEBUG: END
 
             Link link;
-            if (constraints.get(constraintID).getValue0() == null || truthValue != constraints.get(constraintID).getValue0()) {
+            if (truthValue != constraints.get(constraintID).getValue0()) {
                 link = generator.generate(cct, new Binding());
             }
             else {
@@ -139,8 +162,8 @@ public class XConCChecker extends Checker implements Closable {
 
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time3);
+//            updateMeasure(constraintID, cct);
             // DEBUG: END
-            this.cct = cct;
         }
 
         return result;

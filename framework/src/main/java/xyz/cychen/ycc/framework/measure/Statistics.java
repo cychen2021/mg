@@ -1,5 +1,7 @@
 package xyz.cychen.ycc.framework.measure;
 
+import org.javatuples.Pair;
+
 public final class Statistics {
     public static String[] header = new String[]{
         "buildTime", "evalTime", "genTime"
@@ -65,12 +67,11 @@ public final class Statistics {
         this.updateGenTime(another.genTime);
         this.updateOverheadTime(another.overheadTime);
     }
-
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(buildTime / 1000000).append(",");
-        builder.append(evalTime / 1000000).append(",");
-        builder.append(genTime / 1000000).append(",");
+        builder.append(buildTime / 1000).append(",");
+        builder.append(evalTime / 1000).append(",");
+        builder.append(genTime / 1000).append(",");
         return builder.toString();
     }
 }

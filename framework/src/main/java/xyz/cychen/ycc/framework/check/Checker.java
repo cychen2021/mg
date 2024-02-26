@@ -5,6 +5,7 @@ import xyz.cychen.ycc.framework.*;
 import xyz.cychen.ycc.framework.cct.CCT;
 import xyz.cychen.ycc.framework.formula.Formula;
 import xyz.cychen.ycc.framework.formula.QuantifiedFormula;
+import xyz.cychen.ycc.framework.measure.Measure;
 import xyz.cychen.ycc.framework.measure.Statistics;
 
 import java.util.*;
@@ -46,6 +47,7 @@ public abstract class Checker {
     protected final Map<String, ContextSet> sets;
     protected final Map<String, Set<String>> setToConstraints;
     protected Map<String, Statistics> statistics;
+    protected Measure measure = new Measure();
 
 
     public Checker(Builder builder, Evaluator evaluator, Generator generator,
@@ -102,12 +104,6 @@ public abstract class Checker {
         }
     }
 
-    protected CCT cct;
-
-    public CCT getCCT() {
-        return cct;
-    }
-
     public abstract String getName();
 
     protected void updateStats(String constraintID, long buildTime, long evalTime, long genTime, long overheadTime) {
@@ -122,23 +118,6 @@ public abstract class Checker {
     protected abstract Map<String, Pair<Boolean, Link>> checkDelChange(DelChange delChange);
     protected Deducer deducer = new Deducer();
 
-    protected Map<String, Pair<Boolean, Link>> checkInner(String targetSet) {
-        throw new UnsupportedOperationException();
-    }
-
-    public List<Pair<String, Link>> check(String targetSet) {
-        List<Pair<String, Link>> result = new LinkedList<>();
-        Map<String, Pair<Boolean, Link>> checkResult = checkInner(targetSet);
-        for (var p: checkResult.entrySet()) {
-            Boolean target = constraints.get(p.getKey()).getValue0();
-            boolean truthValue = p.getValue().getValue0();
-            if (target == null || truthValue != target) {
-                result.add(Pair.with(p.getKey(), p.getValue().getValue1()));
-            }
-        }
-        return result;
-    }
-
     public List<Pair<String, Link>> check(Change change) {
         List<Pair<String, Link>> result = new LinkedList<>();
         Map<String, Pair<Boolean, Link>> checkResult = null;
@@ -152,9 +131,9 @@ public abstract class Checker {
             System.exit(-1);
         }
         for (var p: checkResult.entrySet()) {
-            Boolean target = constraints.get(p.getKey()).getValue0();
+            boolean target = constraints.get(p.getKey()).getValue0();
             boolean truthValue = p.getValue().getValue0();
-            if (target == null || truthValue != target) {
+            if (truthValue != target) {
                 result.add(Pair.with(p.getKey(), p.getValue().getValue1()));
             }
         }
@@ -169,7 +148,22 @@ public abstract class Checker {
         updateStats(constraintID, afterBuild-start, afterEval-afterBuild, afterGen-afterEval, 0);
     }
 
+//    protected void updateTimeCount(String constraintID, long start, long afterBuild, long afterEval, long afterGen,
+//                                   long overheadTime) {
+//        updateStats(constraintID, afterBuild-start, afterEval-afterBuild-overheadTime,
+//                    afterGen-afterEval, overheadTime);
+//    }
+
+    private Statistics measure(boolean constraint, CCT cct) {
+        return measure.measure(constraint, cct);
+    }
+
     private void updateStats(String constraintID, Statistics stat) {
         statistics.get(constraintID).update(stat);
     }
+
+//    protected void updateMeasure(String constraintID, CCT cct) {
+//        Statistics stat = measure(constraints.get(constraintID).getValue0(), cct);
+//        updateStats(constraintID, stat);
+//    }
 }

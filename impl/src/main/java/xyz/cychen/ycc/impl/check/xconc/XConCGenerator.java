@@ -28,7 +28,6 @@ public class XConCGenerator extends Generator {
     }
 
     public Link generate(CCT cct, Binding binding, boolean splittable) {
-        cct.setSCCT();
         if (cct instanceof AndCCT andCCT) {
             return visit(andCCT, binding, splittable);
         } else if (cct instanceof OrCCT orCCT) {

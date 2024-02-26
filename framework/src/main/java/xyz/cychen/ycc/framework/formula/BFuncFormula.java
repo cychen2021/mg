@@ -1,6 +1,9 @@
 package xyz.cychen.ycc.framework.formula;
 
-import xyz.cychen.ycc.framework.*;
+import xyz.cychen.ycc.framework.Binding;
+import xyz.cychen.ycc.framework.Context;
+import xyz.cychen.ycc.framework.Variable;
+import xyz.cychen.ycc.framework.Predicate;
 
 import java.util.Arrays;
 
@@ -52,6 +55,12 @@ public class BFuncFormula extends Formula {
     }
 
     @Override
+    public void analyzeEConditions() {
+        posConditions = new EConditionStore();
+        negConditions = new EConditionStore();
+    }
+
+    @Override
     public Formula[] getChildren() {
         return new Formula[0];
     }
@@ -73,9 +82,5 @@ public class BFuncFormula extends Formula {
     @Override
     protected Formula clone() throws CloneNotSupportedException {
         return new BFuncFormula(predicate, parameters.clone());
-    }
-
-    public String getFuncName() {
-        return ((Named) predicate).getName();
     }
 }

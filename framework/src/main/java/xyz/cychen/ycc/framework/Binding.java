@@ -2,8 +2,9 @@ package xyz.cychen.ycc.framework;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public class Binding implements Cloneable{
+public class Binding implements Cloneable {
     private final Map<Variable, Context> map;
 
     public Binding() {
@@ -76,10 +77,6 @@ public class Binding implements Cloneable{
             }
         }
         return true;
-    }
-
-    public Map<Variable, Context> getMap() {
-        return map;
     }
 
     @Override

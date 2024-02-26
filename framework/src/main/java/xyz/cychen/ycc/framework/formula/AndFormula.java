@@ -8,6 +8,16 @@ public class AndFormula extends BinaryFormula{
     }
 
     @Override
+    public void analyzeEConditions() {
+        left.analyzeEConditions();
+        right.analyzeEConditions();
+        left.posConditions.linkTo(right.negConditions);
+        right.posConditions.linkTo(left.negConditions);
+        posConditions = left.posConditions.union(right.posConditions);
+        negConditions = left.negConditions.union(right.negConditions);
+    }
+
+    @Override
     public int hashCode() {
         int l = left.hashCode();
         int r = right.hashCode();

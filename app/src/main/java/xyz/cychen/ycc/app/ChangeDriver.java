@@ -40,10 +40,13 @@ public class ChangeDriver extends Driver {
 //                System.out.println(count);
                 scheduler.process(c);
 //                count++;
+//                if (count == 3000) {
+//                    break;
+//                }
             }
             output(Path.of(resultDir, scheduler.getChecker().getName()+".txt").toString(), result);
             outputStats(Path.of(statDir, scheduler.getChecker().getName()+".csv").toString(), scheduler.getStatistics());
-            if (checkMethod.equals("ConC") || checkMethod.equals("OConC") || checkMethod.equals("XConC")) {
+            if (scheduler.getChecker().getName().startsWith("ConC")) {
                 ((Closable) scheduler.getChecker()).shutdown();
             }
         }

@@ -5,7 +5,6 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.javatuples.Pair;
 import org.dom4j.io.SAXReader;
-import xyz.cychen.ycc.app.wrapper.WrapperPredicate;
 import xyz.cychen.ycc.framework.ContextSet;
 import xyz.cychen.ycc.framework.Predicate;
 import xyz.cychen.ycc.framework.Scheduler;
@@ -22,16 +21,6 @@ public class RuleBuilder {
     private String fileName;
     private Map<String, Pair<ContextSet, Scheduler.Filter>> patterns;
     boolean validationMode;
-
-    boolean testeeMode = false;
-
-    public void setTesteeMode() {
-        testeeMode = true;
-    }
-
-    public void unsetTesteeMode() {
-        testeeMode = false;
-    }
 
     public RuleBuilder(String fileName, Map<String, Pair<ContextSet, Scheduler.Filter>> patterns) {
         this.fileName = fileName;
@@ -73,7 +62,7 @@ public class RuleBuilder {
             Element eFormula = (Element) rule.selectSingleNode("formula");
             assert eFormula.elements().size() == 1;
             Formula f = buildFormula(eFormula.elements().get(0));
-            result.put(id, Pair.with(testeeMode? null : true, f));
+            result.put(id, Pair.with(true, f));
         }
         return result;
     }
@@ -114,41 +103,37 @@ public class RuleBuilder {
                     paras[pos-1] = v;
                 }
                 String bfunc = element.attributeValue("name");
-                if (testeeMode) {
-                    predicate = new WrapperPredicate(bfunc, paras);
-                } else {
-                    switch (bfunc) {
-                        case "same":
-                            predicate = CarPredicate.same;
-                            break;
-                        case "sz_loc_dist":
-                            predicate = CarPredicate.szLocDist;
-                            break;
-                        case "sz_loc_range":
-                            predicate = CarPredicate.szLocRange;
-                            break;
-                        case "sz_loc_close":
-                            predicate = CarPredicate.szLocClose;
-                            break;
-                        case "sz_spd_close":
-                            predicate = CarPredicate.szSpdClose;
-                            break;
-                        default:
-                            assert bfunc.startsWith("random");
-                            String[] tokens = bfunc.split("_");
-                            Integer id = null;
-                            assert tokens.length == 2 || tokens.length == 1;
-                            if (tokens.length == 2) {
-                                id = Integer.parseInt(tokens[1]);
-                            }
-                            if (validationMode) {
-                                predicate = new CarPredicate.RandomP4Valid(id, cache);
-                            }
-                            else {
-                                predicate = new CarPredicate.RandomP();
-                            }
-                            break;
-                    }
+                switch (bfunc) {
+                    case "same":
+                        predicate = CarPredicate.same;
+                        break;
+                    case "sz_loc_dist":
+                        predicate = CarPredicate.szLocDist;
+                        break;
+                    case "sz_loc_range":
+                        predicate = CarPredicate.szLocRange;
+                        break;
+                    case "sz_loc_close":
+                        predicate = CarPredicate.szLocClose;
+                        break;
+                    case "sz_spd_close":
+                        predicate = CarPredicate.szSpdClose;
+                        break;
+                    default:
+                        assert bfunc.startsWith("random");
+                        String[] tokens = bfunc.split("_");
+                        Integer id = null;
+                        assert tokens.length == 2 || tokens.length == 1;
+                        if (tokens.length == 2) {
+                            id = Integer.parseInt(tokens[1]);
+                        }
+                        if (validationMode) {
+                            predicate = new CarPredicate.RandomP4Valid(id, cache);
+                        }
+                        else {
+                            predicate = new CarPredicate.RandomP();
+                        }
+                        break;
                 }
                 break;
             default:

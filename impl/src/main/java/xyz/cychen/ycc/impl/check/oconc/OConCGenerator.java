@@ -268,4 +268,25 @@ public class OConCGenerator extends ConCGenerator {
         cct.setLK(result);
         return result;
     }
+//    @Override
+//    public Link visit(ExistentialCCT cct, Binding binding) {
+//        if (cct.getFormula().getGoal() != Goal.SAT) {
+//            Link r = Link.of(cct.getTV() ? Link.Type.SAT : Link.Type.VIO);
+//            cct.setLK(r);
+//            return r;
+//        } else {
+//            return super.visit(cct, binding);
+//        }
+//    }
+//
+//    @Override
+//    public Link visit(UniversalCCT cct, Binding binding) {
+//        if (cct.getFormula().getGoal() != Goal.VIO) {
+//            Link r = Link.of(cct.getTV() ? Link.Type.SAT : Link.Type.VIO);
+//            cct.setLK(r);
+//            return r;
+//        } else {
+//            return super.visit(cct, binding);
+//        }
+//    }
 }

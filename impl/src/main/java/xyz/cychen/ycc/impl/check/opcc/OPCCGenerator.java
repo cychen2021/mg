@@ -22,8 +22,10 @@ public class OPCCGenerator extends PCCGenerator {
         boolean subAf = cct.getFormula().getChildren()[0].isAffected();
         Context ctx = currentChange.getContext();
         if (!setChange && !subAf) {
+//            cct.setIncrementalCount(0);
             return cct.getLK();
         } else if (cct.getFormula().getGoal() != Goal.VIO) {
+//            setIncrementalLinkCount(cct, 0);
 
             Link r = Link.of(cct.getTV() ? Link.Type.SAT : Link.Type.VIO);
             cct.setLK(r);
@@ -44,6 +46,7 @@ public class OPCCGenerator extends PCCGenerator {
             } else {
                 newLink = Link.copy(oldLink);
             }
+//            setIncrementalLinkCount(cct, r);
             cct.setLK(newLink);
             return newLink;
         }
@@ -63,6 +66,7 @@ public class OPCCGenerator extends PCCGenerator {
                     incre += nLK.size();
                 }
             }
+//            setIncrementalLinkCount(cct, incre);
             cct.setLK( r);
             return r;
         }
@@ -85,6 +89,7 @@ public class OPCCGenerator extends PCCGenerator {
                     incre += nLK.size();
                 }
             }
+//            setIncrementalLinkCount(cct, incre);
             cct.setLK( r);
             return r;
         }
@@ -110,8 +115,10 @@ public class OPCCGenerator extends PCCGenerator {
         boolean subAf = cct.getFormula().getChildren()[0].isAffected();
         Context ctx = currentChange.getContext();
         if (!setChange && !subAf) {
+//            cct.setIncrementalCount(0);
             return cct.getLK();
         } else if (cct.getFormula().getGoal() != Goal.SAT) {
+            //setIncrementalLinkCount(cct, 0);
             Link r = Link.of(cct.getTV() ? Link.Type.SAT : Link.Type.VIO);
             cct.setLK(r);
             return r;
@@ -133,6 +140,7 @@ public class OPCCGenerator extends PCCGenerator {
                 newLink = Link.copy(oldLink);
             }
 
+//            setIncrementalLinkCount(cct, r);
 
             cct.setLK(newLink);
             return newLink;
@@ -154,6 +162,7 @@ public class OPCCGenerator extends PCCGenerator {
                 }
             }
 
+//            setIncrementalLinkCount(cct, incre);
 
             cct.setLK( r);
             return r;
@@ -177,6 +186,8 @@ public class OPCCGenerator extends PCCGenerator {
                     incre += nLK.size();
                 }
             }
+
+//            setIncrementalLinkCount(cct, incre);
 
             cct.setLK( r);
             return r;

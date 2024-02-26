@@ -11,6 +11,7 @@ import xyz.cychen.ycc.framework.formula.BFuncFormula;
 import xyz.cychen.ycc.framework.formula.Formula;
 import xyz.cychen.ycc.framework.formula.QuantifiedFormula;
 
+@Deprecated
 public class XPCC1Evaluator extends Evaluator {
 //    private boolean isAffected(CCT cct) {
 //        return !cct.containsProperty(CCT.PROP_TV) || (boolean) cct.getFormula().getProperty(Formula.PROP_AF);

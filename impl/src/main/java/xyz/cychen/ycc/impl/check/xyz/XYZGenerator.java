@@ -10,7 +10,6 @@ import xyz.cychen.ycc.framework.formula.ExistentialFormula;
 import xyz.cychen.ycc.framework.formula.UniversalFormula;
 
 import java.util.List;
-import java.util.function.BiFunction;
 
 public class XYZGenerator extends Generator {
     private Pair<CCT, CCT> binaryHelperCCT(BinaryCCT cct) {
@@ -31,12 +30,6 @@ public class XYZGenerator extends Generator {
 
     private boolean notHelperTruthValue(CCT cct) {
         return cct.getChildren().get(0).getCCT().getTV();
-    }
-
-    @Override
-    public Link generate(CCT cct, Binding binding) {
-        cct.setSCCT();
-        return super.generate(cct, binding);
     }
 
     @Override

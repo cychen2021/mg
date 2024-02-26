@@ -4,8 +4,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import xyz.cychen.ycc.app.wrapper.WrapperChangeDriver;
-import xyz.cychen.ycc.app.wrapper.WrapperPredicate;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,7 +12,7 @@ import java.nio.file.Path;
 
 public class App {
     private enum Mode {
-        NORMAL, RANDOM, RANDOM_VALIDATION, MULTIPLE_RANDOM, MULTIPLE_RANDOM_VALIDATION, TEST
+        NORMAL, RANDOM, RANDOM_VALIDATION, MULTIPLE_RANDOM, MULTIPLE_RANDOM_VALIDATION
     }
 
     public static void main(String[] args) {
@@ -25,12 +23,6 @@ public class App {
         options.addOption("m", "mode", true, "The working mode");
         options.addOption("u", "thread-num-start", true, "The start thread number");
         options.addOption("v", "thread-num-end", true, "The end thread number");
-        options.addOption("t", "technique", true, "The technique to be used");
-        options.addOption("i", "context-pool", true, "The cp.json file");
-        options.addOption("o", "output", true, "The result.json file");
-        options.addOption("r", "rule", true, "The rules.xml file");
-        options.addOption("j", "bfunc-class", true, "The Bfunction.class file");
-        options.addOption("x", "cct", true, "The cct output file");
 
         String configFilePath = "config";
         int start = 1;
@@ -39,8 +31,6 @@ public class App {
 
         int threadNumberStart = -1;
         int threadNumberEnd = -1;
-
-        String cctOutput = null;
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = null;
@@ -78,37 +68,23 @@ public class App {
                 case "MRV":
                     mode = Mode.MULTIPLE_RANDOM_VALIDATION;
                     break;
-                case "TEST":
-                    mode = Mode.TEST;
-                    break;
                 default:
                     System.err.println("Unknown working mode "+m);
                     System.exit(-1);
+				}
+			}
+            if (cmd.hasOption("u")) {
+                threadNumberStart = Integer.parseInt(cmd.getOptionValue("u"));
             }
-        }
-        if (cmd.hasOption("u")) {
-            threadNumberStart = Integer.parseInt(cmd.getOptionValue("u"));
-        }
-        if (cmd.hasOption("v")) {
-            threadNumberEnd = Integer.parseInt(cmd.getOptionValue("v"));
-        }
-        if (cmd.hasOption("x")) {
-            cctOutput = cmd.getOptionValue("x");
-        }
+            if (cmd.hasOption("v")) {
+                threadNumberEnd = Integer.parseInt(cmd.getOptionValue("v"));
+            }
 
-        assert start >= 1 && start <= 24;
-        assert end >= 1 && end <= 24;
-        assert start <= end;
+            assert start >= 1 && start <= 24;
+            assert end >= 1 && end <= 24;
+            assert start <= end;
 
-        Config config = mode == Mode.TEST ? null : loadConfig(configFilePath);
-
-        if (mode != Mode.TEST) {
-            CarPredicate.RandomP.setProb(config.rmodePNom(), config.rmodePDom());
-        }
-
-        if (mode != Mode.TEST && config.suppressOutput() && (mode == Mode.RANDOM_VALIDATION || mode == Mode.MULTIPLE_RANDOM_VALIDATION)) {
-            System.err.println("WARN: Suppressing output shouldn't be used within validation mode");
-        }
+            Config config = loadConfig(configFilePath);
 
         if (mode == Mode.NORMAL) {
             Driver driver = new ChangeDriver(config.checkMethod(), config.scheduleMethod(), config.patternFile(),
@@ -126,24 +102,14 @@ public class App {
                 System.out.println("\nHour "+i+" done!");
             }
         }
-        else if (mode == Mode.TEST) {
-            WrapperPredicate.setBfuncClassPath(cmd.getOptionValue("j"));
-            Driver driver = new WrapperChangeDriver(cmd.getOptionValues("t"), "IMD",
-                    cmd.getOptionValue("i"), cmd.getOptionValue("r"), 1, cctOutput);
-            driver.load(cmd.getOptionValue("i"));
-            driver.exec(cmd.getOptionValue("o"), ".");
-            System.out.println("One test round done!");
-            WrapperPredicate.terminate();
-        }
         else if (mode == Mode.RANDOM) {
             randomOneThread(config.checkMethod(), config.ruleFile(), config.fixedPatternName(), start, end,
-                            config.outputDir(), config.statDir(), config.fixedVolume(), false,
-                            config.concParaNum(), config.fixedRepeatTimes(), config.suppressOutput());
+                    config.inputDir(), config.outputDir(), config.statDir(), false, config.concParaNum());
         }
         else if (mode == Mode.RANDOM_VALIDATION) {
             randomOneThread(config.checkMethod(), config.ruleFile(), config.fixedPatternName(), start, end,
-                            config.outputDir(), config.statDir(), config.fixedVolume(), true,
-                            config.concParaNum(), config.fixedRepeatTimes(), config.suppressOutput());
+                            config.inputDir(), config.outputDir(), config.statDir(), true,
+                            config.concParaNum());
         }
         else if (mode == Mode.MULTIPLE_RANDOM) {
             int ts = Math.max(threadNumberStart, 1);
@@ -158,8 +124,7 @@ public class App {
                 int finalEnd = end;
                 new Thread(()->{
                     randomOneThread(config.checkMethod(), ruleFile, config.fixedPatternName(), finalStart, finalEnd,
-                                    threadOutputDir, threadStat, config.fixedVolume(), false,
-                                    config.concParaNum(), config.fixedRepeatTimes(), config.suppressOutput());
+                            config.inputDir(), threadOutputDir, threadStat, false, config.concParaNum());
                 }).start();
             }
         }
@@ -176,8 +141,7 @@ public class App {
                 int finalEnd = end;
                 new Thread(()->{
                     randomOneThread(config.checkMethod(), ruleFile, config.fixedPatternName(), finalStart, finalEnd,
-                                    threadOutputDir, threadStat, config.fixedVolume(), true,
-                                    config.concParaNum(), config.fixedRepeatTimes(), config.suppressOutput());
+                            config.inputDir(), threadOutputDir, threadStat, true, config.concParaNum());
                 }).start();
             }
         }
@@ -192,12 +156,11 @@ public class App {
     }
 
     private static void randomOneThread(String[] checkMethod, String ruleFile, String fixedPatternName, int start, int end,
-                                        String outputDir, String statDir, int fixedVolume,
-                                        boolean validationMode, int concParaNum, int fixedRepeatTimes, boolean suppressOutput) {
-        Driver driver =
-                new FixedDriver(checkMethod, ruleFile, fixedPatternName, fixedVolume, validationMode,
-                                concParaNum, suppressOutput, fixedRepeatTimes);
+                                 String inputDir, String outputDir, String statDir, boolean validationMode, int concParaNum) {
+        Driver driver = new FixedDriver(checkMethod, ruleFile, fixedPatternName, validationMode, concParaNum);
         for (int i = start; i <= end; i++) {
+            String filePath = Path.of(inputDir,"data_"+i+"_22_changes.txt").toString();
+            driver.load(filePath);
             String specificOutputDir = Path.of(outputDir, Integer.toString(i)).toString();
             String specificStatDir = Path.of(statDir, Integer.toString(i)).toString();
             createIfNotExists(specificOutputDir);
@@ -209,8 +172,7 @@ public class App {
 
     public record Config(String scheduleMethod, String[] checkMethod, String inputDir, String patternFile,
                          String ruleFile, String outputDir, String statDir, int fixedVolume, String fixedPatternName,
-                         int maxThreadNum, int concParaNum, boolean suppressOutput, int rmodePNom, int rmodePDom,
-                         int fixedRepeatTimes) {
+                         int maxThreadNum, int concParaNum) {
 
     }
 
@@ -218,9 +180,6 @@ public class App {
         String scheduleMethod=null, contextDir=null, patternFile=null, ruleFile=null, outDir=null,
                 statDir=null, fixedPatternName=null;
         int fixedVolume = -1, threadNum = -1, concParaNum = -1;
-        int pDom = 2, pNom = 1;
-        int fixedRepeatTimes = 1;
-        boolean suppressOutput = false;
         String[] checkers = null;
         try(BufferedReader reader = new BufferedReader(new FileReader(configFilePath))) {
             String line;
@@ -244,6 +203,8 @@ public class App {
                             assert checker.equals("ECC") || checker.equals("OCC") || checker.equals("XYZ") ||
                                    checker.equals("PCC") || checker.equals("XPCC") || checker.equals("ConC")||
                                    checker.equals("XConC") || checker.equals("OPCC") || checker.equals("OConC") ||
+                                   checker.equals("EXYZ") || checker.equals("EPCC1") || checker.equals("EPCC2") ||
+                                   checker.equals("EPCC3") || checker.equals("EPCC4") | checker.equals("EConC") ||
                                    checker.isEmpty();
                             if (!checker.isEmpty()) {
                                 count++;
@@ -286,30 +247,12 @@ public class App {
                     case "concParaNum":
                         concParaNum = Integer.parseInt(tokens[1]);
                         break;
-                    case "suppressOutput":
-                        if (tokens[1].equals("true")) {
-                            suppressOutput = true;
-                        } else if (tokens[1].equals("false")) {
-                            suppressOutput = false;
-                        } else {
-                            throw new IllegalArgumentException("Invalid value for suppressOutput: " + tokens[1]);
-                        }
-                        break;
-                    case "rmodeProb" :
-                        String[] nd = tokens[1].split("\\s*/\\s*");
-                        pNom = Integer.parseInt(nd[0]);
-                        pDom = Integer.parseInt(nd[1]);
-                        break;
-                    case "fixedRepeatTimes":
-                        fixedRepeatTimes = Integer.parseInt(tokens[1]);
-                        break;
                     default:
                         throw new IllegalArgumentException("Invalid parameter: " + tokens[0]);
                 }
             }
             return new Config(scheduleMethod, checkers, contextDir, patternFile, ruleFile, outDir, statDir,
-                              fixedVolume, fixedPatternName, threadNum, concParaNum, suppressOutput, pNom, pDom,
-                              fixedRepeatTimes);
+                              fixedVolume, fixedPatternName, threadNum, concParaNum);
         }
         catch (Exception e) {
             e.printStackTrace();

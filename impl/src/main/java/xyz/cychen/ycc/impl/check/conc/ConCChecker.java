@@ -30,10 +30,10 @@ public class ConCChecker extends Checker implements Closable {
         ((ConCGenerator) generator).setExecutor(executor);
         ((ConCBuilder) builder).setExecutor(executor);
         constraints.forEach((k, v) -> {
-            if (v.getValue0() != null && v.getValue0()) {
+            if (v.getValue0()) {
                 deducer.deduce(v.getValue1(), Goal.VIO);
             }
-            else if (v.getValue0() != null) {
+            else {
                 deducer.deduce(v.getValue1(), Goal.SAT);
             }
         });
@@ -85,8 +85,8 @@ public class ConCChecker extends Checker implements Closable {
 
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time3);
+//            updateMeasure(constraintID, cct);
             // DEBUG: END
-            this.cct = cct;
         }
 
         return result;
@@ -129,8 +129,8 @@ public class ConCChecker extends Checker implements Closable {
 
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time3);
+//            updateMeasure(constraintID, cct);
             // DEBUG: END
-            this.cct = cct;
         }
 
         return result;

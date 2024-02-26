@@ -8,5 +8,4 @@ bin
 .idea
 .vscode
 
-config
-script.py
+/output/

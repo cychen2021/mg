@@ -17,6 +17,7 @@ public class OCCGeneratorForPCC extends OCCGenerator {
     @Override
     public Link generate(CCT cct, Binding binding) {
         Link r = super.generate(cct, binding);
+//        setIncrementalLinkCount(cct, r.size());
         return r;
     }
 }

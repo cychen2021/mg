@@ -11,6 +11,15 @@ public class UniversalFormula extends QuantifiedFormula{
     }
 
     @Override
+    public void analyzeEConditions() {
+        sub.analyzeEConditions();
+        posConditions = sub.posConditions;
+        negConditions = sub.negConditions;
+        posConditions.add(false, universe.getId());
+        negConditions.add(true, universe.getId());
+    }
+
+    @Override
     public int hashCode() {
         return Arrays.hashCode(
             new int[]{

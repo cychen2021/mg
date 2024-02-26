@@ -7,8 +7,11 @@ import xyz.cychen.ycc.framework.Link;
 import xyz.cychen.ycc.framework.cct.CCT;
 import xyz.cychen.ycc.framework.check.Checker;
 import xyz.cychen.ycc.framework.formula.Formula;
+import xyz.cychen.ycc.framework.measure.IncrementalMeasure;
 import xyz.cychen.ycc.impl.check.ecc.ECCBuilder;
+import xyz.cychen.ycc.impl.check.ecc.ECCEvaluator;
 import xyz.cychen.ycc.impl.check.pcc.PCCAdjuster;
+import xyz.cychen.ycc.impl.check.pcc.PCCEvaluator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,13 +21,14 @@ public class XPCC2Checker extends Checker {
     public XPCC2Checker(Map<String, Pair<Boolean, Formula>> constraints) {
         super(new ECCBuilder(), new XPCC2Evaluator(), new XPCC2Generator(), constraints);
         constraints.forEach((k, v) -> {
-            if (v.getValue0() != null && v.getValue0()) {
+            if (v.getValue0()) {
                 deducer.deduce(v.getValue1(), Goal.VIO);
             }
-            else if (v.getValue0() != null) {
+            else {
                 deducer.deduce(v.getValue1(), Goal.SAT);
             }
         });
+        this.measure = new IncrementalMeasure();
     }
 
     protected PCCAdjuster adjuster = new PCCAdjuster(builder);
@@ -86,7 +90,7 @@ public class XPCC2Checker extends Checker {
             // DEBUG: END
 
             Link link;
-            if (constraints.get(constraintID).getValue0() == null || truthValue != constraints.get(constraintID).getValue0()) {
+            if (truthValue != constraints.get(constraintID).getValue0()) {
                 ((XPCC2Generator) generator).setChange(addChange);
                 link = generator.generate(cct, new Binding());
             }
@@ -103,10 +107,10 @@ public class XPCC2Checker extends Checker {
             //TODO
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time3, 0, 0);
+//            updateMeasure(constraintID, cct);
             ((XPCC2Evaluator) evaluator).clearOverhead();
             ((XPCC2Generator) generator).clearOverhead();
             // DEBUG: END
-            this.cct = cct;
         }
 
         return result;
@@ -158,7 +162,7 @@ public class XPCC2Checker extends Checker {
             // DEBUG: END
 
             Link link;
-            if (constraints.get(constraintID).getValue0() == null || truthValue != constraints.get(constraintID).getValue0()) {
+            if (truthValue != constraints.get(constraintID).getValue0()) {
                 ((XPCC2Generator) generator).setChange(delChange);
                 link = generator.generate(cct, new Binding());
             }
@@ -174,10 +178,10 @@ public class XPCC2Checker extends Checker {
 
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time3, 0, 0);
+//            updateMeasure(constraintID, cct);
             ((XPCC2Evaluator) evaluator).clearOverhead();
             ((XPCC2Generator) generator).clearOverhead();
             // DEBUG: END
-            this.cct = cct;
         }
 
         return result;

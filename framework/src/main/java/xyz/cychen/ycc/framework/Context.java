@@ -1,8 +1,5 @@
 package xyz.cychen.ycc.framework;
 
-import java.util.Map;
-import java.util.Objects;
-
 public abstract class Context {
     public Context(String id) {
         this.id = id;
@@ -24,9 +21,5 @@ public abstract class Context {
     @Override
     public int hashCode() {
         return id.hashCode();
-    }
-
-    public Map<String, String> toMap() {
-        throw new UnsupportedOperationException();
     }
 }

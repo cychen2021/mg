@@ -10,6 +10,13 @@ public class NotFormula extends Formula {
     }
 
     @Override
+    public void analyzeEConditions() {
+        sub.analyzeEConditions();
+        posConditions = sub.negConditions;
+        negConditions = sub.posConditions;
+    }
+
+    @Override
     public Formula[] getChildren() {
         return new Formula[]{sub};
     }

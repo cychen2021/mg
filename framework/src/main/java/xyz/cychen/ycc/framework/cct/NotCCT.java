@@ -19,25 +19,4 @@ public class NotCCT extends CCT {
         result.add(0, NormalArrow.of(sub));
         return result;
     }
-
-    @Override
-    public String toStringRepr(boolean tagSCCT) {
-        var sb = new StringBuilder();
-        sb.append("(");
-        sb.append("\"");
-        if (tagSCCT && this.isSCCT()) {
-            sb.append("SCCT ");
-        }
-        if (this.tv) {
-            sb.append("T ");
-        } else {
-            sb.append("F ");
-        }
-        sb.append("not");
-        sb.append("\"");
-        sb.append(" ");
-        sb.append(sub.toStringRepr(tagSCCT));
-        sb.append(")");
-        return sb.toString();
-    }
 }

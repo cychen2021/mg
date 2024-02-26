@@ -8,6 +8,16 @@ public class ImpliesFormula extends BinaryFormula{
     }
 
     @Override
+    public void analyzeEConditions() {
+        left.analyzeEConditions();
+        right.analyzeEConditions();
+        left.posConditions.linkTo(right.posConditions);
+        right.negConditions.linkTo(left.negConditions);
+        posConditions = left.negConditions.union(right.posConditions);
+        negConditions = left.posConditions.union(right.negConditions);
+    }
+
+    @Override
     public int hashCode() {
         int l = left.hashCode();
         int r = right.hashCode();

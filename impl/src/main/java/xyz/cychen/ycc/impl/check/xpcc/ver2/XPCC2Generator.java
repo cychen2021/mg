@@ -30,6 +30,7 @@ public class XPCC2Generator extends Generator {
     @Override
     public Link generate(CCT cct, Binding binding) {
         if (!cct.isOutdated() && !cct.isAffectedForXPCC2()) {
+//            cct.setIncrementalCount(0);
             return cct.getLK();
         }
 
@@ -79,7 +80,7 @@ public class XPCC2Generator extends Generator {
             r = Link.union(l1, l2);
         }
 
-
+//        setIncrementalLinkCount(cct, r.size());
 
         cct.setLK(r);
         return r;
@@ -109,7 +110,7 @@ public class XPCC2Generator extends Generator {
             r = Link.cartesian(l1, l2);
         }
 
-
+//        setIncrementalLinkCount(cct, r.size());
 
         cct.setLK(r);
         return r;
@@ -139,7 +140,7 @@ public class XPCC2Generator extends Generator {
             r = Link.cartesian(Link.flip(l1), l2);
         }
 
-
+//        setIncrementalLinkCount(cct, r.size());
 
         cct.setLK(r);
         return r;
@@ -150,7 +151,7 @@ public class XPCC2Generator extends Generator {
         Link s = generate(cct.getChildren().get(0).getCCT(), binding);
         Link r = Link.flip(s);
 
-
+//        setIncrementalLinkCount(cct, r.size());
 
         cct.setLK(r);
         return r;
@@ -172,7 +173,7 @@ public class XPCC2Generator extends Generator {
                 binding.unbind(v);
                 r = l.size();
             }
-
+//            setIncrementalLinkCount(cct, r);
             Link old = cct.getLK();
             Link updated = Link.union(old, l);
             if (updated == null) {
@@ -200,7 +201,7 @@ public class XPCC2Generator extends Generator {
                 }
             }
 
-
+//            setIncrementalLinkCount(cct, incre);
 
             cct.setLK(r);
             return r;
@@ -224,12 +225,10 @@ public class XPCC2Generator extends Generator {
 
                 r = l.size();
             }
-
+//            setIncrementalLinkCount(cct, r);
             Link old = cct.getLK();
             Link updated = Link.union(old, l);
-            if (updated == null) {
-                updated = Link.of(cct.getTV() ? Link.Type.SAT : Link.Type.VIO);
-            }
+            updated = Link.of(cct.getTV() ? Link.Type.SAT : Link.Type.VIO);
             cct.setLK(updated);
             return updated;
         }
@@ -252,7 +251,7 @@ public class XPCC2Generator extends Generator {
                 }
             }
 
-
+//            setIncrementalLinkCount(cct, incre);
 
             cct.setLK(r);
             return r;
@@ -263,7 +262,7 @@ public class XPCC2Generator extends Generator {
     public Link visit(BFuncCCT cct, Binding binding) {
         cct.bind(binding);
         Link r = Link.of(cct.getTV()? Link.Type.SAT : Link.Type.VIO);
-
+//        setIncrementalLinkCount(cct, 0);
         cct.setLK(r);
         return r;
     }

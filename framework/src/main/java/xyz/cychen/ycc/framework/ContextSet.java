@@ -12,10 +12,6 @@ public class ContextSet implements Iterable<Context> {
         this.pool = new HashSet<>();
     }
 
-    public void purge() {
-        pool.clear();
-    }
-
     public boolean contains(Context o) {
         return pool.contains(o);
     }

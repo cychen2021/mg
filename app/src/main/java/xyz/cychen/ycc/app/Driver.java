@@ -9,6 +9,11 @@ import xyz.cychen.ycc.framework.measure.Statistics;
 import xyz.cychen.ycc.framework.check.Checker;
 import xyz.cychen.ycc.impl.check.conc.ConCChecker;
 import xyz.cychen.ycc.impl.check.ecc.ECCChecker;
+import xyz.cychen.ycc.impl.check.econc.EConCChecker;
+import xyz.cychen.ycc.impl.check.epcc.ver1.EPCC1Checker;
+import xyz.cychen.ycc.impl.check.epcc.ver2.EPCC2Checker;
+import xyz.cychen.ycc.impl.check.epcc.ver4.EPCC4Checker;
+import xyz.cychen.ycc.impl.check.exyz.EXYZChecker;
 import xyz.cychen.ycc.impl.check.occ.OCCChecker;
 import xyz.cychen.ycc.impl.check.oconc.OConCChecker;
 import xyz.cychen.ycc.impl.check.opcc.OPCCChecker;
@@ -100,6 +105,21 @@ public abstract class Driver {
                 break;
             case "OConC":
                 checker = new OConCChecker(concParaNum, rules);
+                break;
+            case "EXYZ":
+                checker = new EXYZChecker(rules);
+                break;
+            case "EPCC1":
+                checker = new EPCC1Checker(rules);
+                break;
+            case "EPCC2":
+                checker = new EPCC2Checker(rules);
+                break;
+            case "EPCC4":
+                checker = new EPCC4Checker(rules);
+                break;
+            case "EConC":
+                checker = new EConCChecker(concParaNum, rules);
                 break;
             default:
                 System.err.println("Unknown checker "+checkMethod);

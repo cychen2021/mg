@@ -5,10 +5,13 @@ import xyz.cychen.ycc.framework.Binding;
 import xyz.cychen.ycc.framework.Goal;
 import xyz.cychen.ycc.framework.Link;
 import xyz.cychen.ycc.framework.cct.*;
+import xyz.cychen.ycc.framework.check.Builder;
 import xyz.cychen.ycc.framework.check.Checker;
 import xyz.cychen.ycc.framework.formula.*;
+import xyz.cychen.ycc.framework.measure.IncrementalMeasure;
 import xyz.cychen.ycc.impl.check.ecc.ECCBuilder;
 import xyz.cychen.ycc.impl.check.ecc.ECCEvaluator;
+import xyz.cychen.ycc.impl.check.ecc.ECCGenerator;
 import xyz.cychen.ycc.impl.check.pcctotalgen.ECCGeneratorForPCC;
 
 import java.util.HashMap;
@@ -20,13 +23,14 @@ public class PCCChecker extends Checker {
         super(new ECCBuilder(), new PCCEvaluator(new ECCEvaluator()), new PCCGenerator(new ECCGeneratorForPCC()),
                 constraints);
         constraints.forEach((k, v) -> {
-            if (v.getValue0() != null && v.getValue0()) {
+            if (v.getValue0()) {
                 deducer.deduce(v.getValue1(), Goal.VIO);
             }
-            else if (v.getValue0() != null) {
+            else {
                 deducer.deduce(v.getValue1(), Goal.SAT);
             }
         });
+        this.measure = new IncrementalMeasure();
     }
 
     protected PCCAdjuster adjuster = new PCCAdjuster(builder);
@@ -98,8 +102,8 @@ public class PCCChecker extends Checker {
 
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time3);
+//            updateMeasure(constraintID, cct);
             // DEBUG: END
-            this.cct = cct;
         }
 
         return result;
@@ -167,8 +171,8 @@ public class PCCChecker extends Checker {
 
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time3);
+//            updateMeasure(constraintID, cct);
             // DEBUG: END
-            this.cct = cct;
         }
 
         return result;

@@ -11,6 +11,15 @@ public class ExistentialFormula extends QuantifiedFormula{
     }
 
     @Override
+    public void analyzeEConditions() {
+        sub.analyzeEConditions();
+        posConditions = sub.posConditions;
+        negConditions = sub.negConditions;
+        posConditions.add(true, universe.getId());
+        negConditions.add(false, universe.getId());
+    }
+
+    @Override
     public int hashCode() {
         return Arrays.hashCode(
                 new int[]{

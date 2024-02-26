@@ -7,10 +7,13 @@ import xyz.cychen.ycc.framework.Link;
 import xyz.cychen.ycc.framework.cct.CCT;
 import xyz.cychen.ycc.framework.check.Checker;
 import xyz.cychen.ycc.framework.formula.Formula;
+import xyz.cychen.ycc.framework.measure.IncrementalMeasure;
 import xyz.cychen.ycc.impl.check.ecc.ECCBuilder;
 import xyz.cychen.ycc.impl.check.ecc.ECCEvaluator;
 import xyz.cychen.ycc.impl.check.pcc.PCCAdjuster;
 import xyz.cychen.ycc.impl.check.pcc.PCCEvaluator;
+import xyz.cychen.ycc.impl.check.xpcc.ver2.XPCC2Evaluator;
+import xyz.cychen.ycc.impl.check.xyz.XYZGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,13 +24,15 @@ public class XPCC1Checker extends Checker {
         super(new ECCBuilder(), new PCCEvaluator(new ECCEvaluator()), new XPCC1Generator(), constraints);
         constraints.forEach((k, v) -> {
             timestamp.put(k, 0);
-            if (v.getValue0() != null && v.getValue0()) {
+            if (v.getValue0()) {
                 deducer.deduce(v.getValue1(), Goal.VIO);
             }
-            else if (v.getValue0() != null) {
+            else {
                 deducer.deduce(v.getValue1(), Goal.SAT);
             }
         });
+
+        this.measure = new IncrementalMeasure();
     }
 
     protected Map<String, Integer> timestamp = new HashMap<>();
@@ -47,16 +52,6 @@ public class XPCC1Checker extends Checker {
                                    long afterGen, long afterMark) {
         updateStats(constraintID, afterBuild-start, afterEval-afterBuild,
                 afterGen-afterEval, 0);
-    }
-
-    protected void tagSCCT(CCT cct, String constraintID) {
-        if (cct.getChrono() == this.timestamp.get(constraintID)) {
-            cct.setSCCT();
-        }
-        for (var child: cct.getChildren()) {
-            var childCCT = child.getCCT();
-            tagSCCT(childCCT, constraintID);
-        }
     }
 
     @Override
@@ -84,7 +79,6 @@ public class XPCC1Checker extends Checker {
                 adjuster.affect(f, addChange);
                 adjuster.adjust(cct, addChange);
             }
-            cct.clearSCCT();
 
             // DEBUG: BEGIN
             long time1 = System.nanoTime();
@@ -107,7 +101,7 @@ public class XPCC1Checker extends Checker {
 
             ((XPCC1Generator) generator).setChrono(ts);
             Link link;
-            if (constraints.get(constraintID).getValue0() == null || truthValue != constraints.get(constraintID).getValue0()) {
+            if (truthValue != constraints.get(constraintID).getValue0()) {
                 ((XPCC1Generator) generator).setChange(addChange);
                 link = generator.generate(cct, new Binding());
             }
@@ -119,7 +113,7 @@ public class XPCC1Checker extends Checker {
 //            long time3 = System.nanoTime();
             // DEBUG: END
 
-            if (constraints.get(constraintID).getValue0() == null || truthValue != constraints.get(constraintID).getValue0()) {
+            if (truthValue != constraints.get(constraintID).getValue0()) {
                 marker.mark(cct, ts);
             }
 
@@ -133,8 +127,8 @@ public class XPCC1Checker extends Checker {
 
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time4, 0);
+//            updateMeasure(constraintID, cct);
             // DEBUG: END
-            this.cct = cct;
         }
 
         return result;
@@ -167,7 +161,6 @@ public class XPCC1Checker extends Checker {
                 adjuster.affect(f, delChange);
                 adjuster.adjust(cct, delChange);
             }
-            cct.clearSCCT();
 
             // DEBUG: BEGIN
             long time1 = System.nanoTime();
@@ -190,7 +183,7 @@ public class XPCC1Checker extends Checker {
 
             ((XPCC1Generator) generator).setChrono(ts);
             Link link;
-            if (constraints.get(constraintID).getValue0() == null || truthValue != constraints.get(constraintID).getValue0()) {
+            if (truthValue != constraints.get(constraintID).getValue0()) {
                 ((XPCC1Generator) generator).setChange(delChange);
                 link = generator.generate(cct, new Binding());
             }
@@ -203,7 +196,7 @@ public class XPCC1Checker extends Checker {
 //            // DEBUG: END
 
 
-            if (constraints.get(constraintID).getValue0() == null || truthValue != constraints.get(constraintID).getValue0()) {
+            if (truthValue != constraints.get(constraintID).getValue0()) {
                 marker.mark(cct, ts);
             }
 
@@ -217,7 +210,7 @@ public class XPCC1Checker extends Checker {
 
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time4, 0);
-            this.cct = cct;
+//            updateMeasure(constraintID, cct);
             // DEBUG: END
         }
 

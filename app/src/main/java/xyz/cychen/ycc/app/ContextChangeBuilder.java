@@ -12,8 +12,8 @@ import java.util.List;
 public class ContextChangeBuilder {
     private static long count = 1;
 
-    protected String contextFileName;
-    protected Scheduler scheduler;
+    private String contextFileName;
+    private Scheduler scheduler;
 
     public ContextChangeBuilder(String contextFileName, Scheduler scheduler) {
         this.contextFileName = contextFileName;

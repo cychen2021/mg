@@ -1,31 +1,10 @@
 package xyz.cychen.ycc.app;
 
+import org.javatuples.Pair;
 import xyz.cychen.ycc.framework.Context;
 import xyz.cychen.ycc.framework.Predicate;
 
 import java.util.*;
-
-class MyRandom extends Random {
-    protected int dom;
-    protected int nom;
-
-    public MyRandom(int nom, int dom) {
-        this.dom = dom;
-        this.nom = nom;
-    }
-
-    public MyRandom(long seed, int nom, int dom) {
-        super(seed);
-        this.dom = dom;
-        this.nom = nom;
-    }
-
-    @Override
-    public boolean nextBoolean() {
-        int r = this.nextInt(dom);
-        return r < nom;
-    }
-}
 
 public class CarPredicate {
     public static Predicate same = new Same();
@@ -35,18 +14,10 @@ public class CarPredicate {
     public static Predicate szLocDist = new SZLocDist();
 
     public static class RandomP implements Predicate {
-        protected static Integer dom = null;
-        protected static Integer nom = null;
-
-        public static void setProb(int nom, int dom) {
-            RandomP.nom = nom;
-            RandomP.dom = dom;
-        }
-
-        protected MyRandom random;
+        protected Random random;
 
         public RandomP() {
-            this.random = new MyRandom(nom, dom);
+            this.random = new Random();
         }
 
         @Override

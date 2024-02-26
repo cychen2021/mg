@@ -7,10 +7,14 @@ import xyz.cychen.ycc.framework.Link;
 import xyz.cychen.ycc.framework.cct.CCT;
 import xyz.cychen.ycc.framework.check.Checker;
 import xyz.cychen.ycc.framework.formula.Formula;
+import xyz.cychen.ycc.framework.measure.IncrementalMeasure;
 import xyz.cychen.ycc.impl.check.ecc.ECCBuilder;
 import xyz.cychen.ycc.impl.check.ecc.ECCEvaluator;
+import xyz.cychen.ycc.impl.check.ecc.ECCGenerator;
 import xyz.cychen.ycc.impl.check.pcc.PCCAdjuster;
 import xyz.cychen.ycc.impl.check.pcc.PCCEvaluator;
+import xyz.cychen.ycc.impl.check.pcc.PCCGenerator;
+import xyz.cychen.ycc.impl.check.pcctotalgen.ECCGeneratorForPCC;
 import xyz.cychen.ycc.impl.check.pcctotalgen.OCCGeneratorForPCC;
 
 import java.util.HashMap;
@@ -19,48 +23,19 @@ import java.util.Set;
 
 public class OPCCChecker extends Checker {
     public OPCCChecker(Map<String, Pair<Boolean, Formula>> constraints) {
-        this(constraints, null, false);
-    }
-
-    public OPCCChecker(Map<String, Pair<Boolean, Formula>> constraints, Boolean defaultGoal, boolean testMode) {
         super(new ECCBuilder(), new PCCEvaluator(new ECCEvaluator()), new OPCCGenerator(new OCCGeneratorForPCC()),
                 constraints);
-        this.testMode = testMode;
-        if (!testMode) {
-            constraints.forEach((k, v) -> {
-                if (v.getValue0() == null) {
-                    if (defaultGoal) {
-                        deducer.deduce(v.getValue1(), Goal.VIO);
-                    }
-                    else {
-                        deducer.deduce(v.getValue1(), Goal.SAT);
-                    }
-                }
-                else if (v.getValue0()) {
-                    deducer.deduce(v.getValue1(), Goal.VIO);
-                }
-                else {
-                    deducer.deduce(v.getValue1(), Goal.SAT);
-                }
-            });
-        } else {
-            inner1 = new OPCCChecker(constraints, true, false);
-            inner2 = new OPCCChecker(constraints, false, false);
-        }
+        constraints.forEach((k, v) -> {
+            if (v.getValue0()) {
+                deducer.deduce(v.getValue1(), Goal.VIO);
+            }
+            else {
+                deducer.deduce(v.getValue1(), Goal.SAT);
+            }
+        });
+        this.measure = new IncrementalMeasure();
     }
 
-    private boolean testMode = false;
-
-    public void setTestMode() {
-        this.testMode = true;
-    }
-
-    public void unsetTestMode() {
-        this.testMode = false;
-    }
-
-    private OPCCChecker inner1 = null;
-    private OPCCChecker inner2 = null;
     protected PCCAdjuster adjuster = new PCCAdjuster(builder);
 
     protected Map<String, CCT> ccts =  new HashMap<>();
@@ -72,17 +47,6 @@ public class OPCCChecker extends Checker {
 
     @Override
     protected Map<String, Pair<Boolean, Link>> checkAddChange(AddChange addChange) {
-        if (testMode) {
-            var result1 = inner1.checkAddChange(addChange);
-            var result2 = inner2.checkAddChange(addChange);
-            Map<String, Pair<Boolean, Link>> result = new HashMap<>();
-            for (var cst: constraints.keySet()) {
-                boolean r = result1.get(cst).getValue0();
-                result.put(cst, r ? result1.get(cst) : result2.get(cst));
-            }
-            return result;
-        }
-
         Map<String, Pair<Boolean, Link>> result = new HashMap<>();
 
         String targetSet = addChange.getTargetSet();
@@ -141,8 +105,8 @@ public class OPCCChecker extends Checker {
 
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time3);
+//            updateMeasure(constraintID, cct);
             // DEBUG: END
-            this.cct = cct;
         }
 
         return result;
@@ -150,17 +114,6 @@ public class OPCCChecker extends Checker {
 
     @Override
     protected Map<String, Pair<Boolean, Link>> checkDelChange(DelChange delChange) {
-        if (testMode) {
-            var result1 = inner1.checkDelChange(delChange);
-            var result2 = inner2.checkDelChange(delChange);
-            Map<String, Pair<Boolean, Link>> result = new HashMap<>();
-            for (var cst: constraints.keySet()) {
-                boolean r = result1.get(cst).getValue0();
-                result.put(cst, r ? result1.get(cst) : result2.get(cst));
-            }
-            return result;
-        }
-
         Map<String, Pair<Boolean, Link>> result = new HashMap<>();
 
         String targetSet = delChange.getTargetSet();
@@ -221,8 +174,8 @@ public class OPCCChecker extends Checker {
 
             // DEBUG: BEGIN
             updateTimeCount(constraintID, time0, time1, time2, time3);
+//            updateMeasure(constraintID, cct);
             // DEBUG: END
-            this.cct = cct;
         }
 
         return result;

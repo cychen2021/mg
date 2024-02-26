@@ -7,6 +7,12 @@ import xyz.cychen.ycc.framework.formula.QuantifiedFormula;
 import java.util.*;
 
 public abstract class QuantifiedCCT extends CCT{
+//    protected Map<Context, Integer> recordCount = new HashMap<Context, Integer>();
+//
+//    public Map<Context, Integer> getRecordCount() {
+//        return recordCount;
+//    }
+
     protected Set<Context> newlyAdded = new HashSet<>();
 
     public void record(Context context) {
