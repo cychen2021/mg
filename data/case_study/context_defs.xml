@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<patterns>
+    <pattern>
+        <id>cityA</id>
+        <freshness>3000</freshness>
+        <category>location</category>
+        <subject>any</subject>
+        <predicate>any</predicate>
+        <object>any</object>
+        <site>any</site>
+    </pattern>
+
+    <pattern>
+        <id>cityB</id>
+        <freshness>3000</freshness>
+        <category>location</category>
+        <subject>any</subject>
+        <predicate>any</predicate>
+        <object>any</object>
+        <site>any</site>
+    </pattern>
+</patterns>

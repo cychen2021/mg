@@ -1,0 +1,10 @@
+scheduler=IMD
+checker=ECC;PCC;ConC;OCC;OPCC;OConC;XYZ;XPCC1;XConC;EXYZ;EPCC4;EConC
+inputDir=../data/case_study/context_data
+patternFile=../data/case_study/context_defs.xml
+ruleFile=../data/case_study/constraints.xml
+outputDir=../output
+statDir=../output
+concParaNum=6
+
+
