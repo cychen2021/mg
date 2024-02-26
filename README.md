@@ -9,7 +9,7 @@ Note that we cannot release the full data we used in the case study due to priva
 
 ## Running the Tool
 
-Please notify that we removed the code that counts the ULRs and the numbers of evaluated truth values because they severely slow down the checking process and  lead to imprecision in the measured checking time. We separately measured the three metrics in our evaluation, uncommenting the specific code for one metric each time. We only includes the code that measures the checking time in the released code. It is easy to manually add the code for the other two metrics if needed.
+Please notify that we removed the code that counts the ULRs and the numbers of evaluated truth values because they severely slow down the checking process and  lead to imprecision in the measured checking time. We separately measured the three metrics in our evaluation, uncommenting the specific code for one metric at a time. We only includes the code that measures the checking time in the released code. It is easy to manually add the code for the other two metrics if needed.
 
 Use the following commands to run the tool on the example data:
 
