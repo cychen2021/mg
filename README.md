@@ -5,7 +5,7 @@
 - The constraints used in the comparative study are available in `data/comparative_study/constraints.xml`.
 - Example constraints and contexts for the case study are in `data/case_study/constraints.xml`, `data/case_study/context_defs.xml`, and `data/case_study/context_data/`.
 
-Note that we cannot release the full data we used in the case study due to privacy issues. The example data in `data/case_study` will give a illustration of how to use the tool.
+Note that we cannot release the full data we used in the case study due to privacy issues. The example data in `data/case_study` will give an illustration of how to use the tool.
 
 ## Running the Tool
 
