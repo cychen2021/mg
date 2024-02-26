@@ -17,7 +17,7 @@ Use the following commands to run the tool on the example data:
 ./gradlew app:run --args="-m N -c ../data/case_study/config -s 10 -e 10"
 ```
 
-The checking results and statistics will be in the `output` directory. The checking results will be recorded `<MethodName>.txt` and the statistics will be recorded `<MethodName>.csv`, where `<MethodName>` can be:
+The checking results and statistics will be in the `output/10` directory. The checking results will be recorded `<MethodName>.txt` and the statistics will be recorded `<MethodName>.csv`, where `<MethodName>` can be:
 
 - `ECC-CG`: ECC x CG
 - `ECC-OG`: ECC x OG
