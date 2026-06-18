@@ -59,6 +59,10 @@ public class XPCC1Checker extends Checker {
         Map<String, Pair<Boolean, Link>> result = new HashMap<>();
 
         String targetSet = addChange.getTargetSet();
+        if (!sets.containsKey(targetSet) || !setToConstraints.containsKey(targetSet)) {
+            return result;
+        }
+
         sets.get(targetSet).add(addChange.getContext());
 
         Set<String> related = setToConstraints.get(targetSet);
@@ -139,6 +143,10 @@ public class XPCC1Checker extends Checker {
         Map<String, Pair<Boolean, Link>> result = new HashMap<>();
 
         String targetSet = delChange.getTargetSet();
+        if (!sets.containsKey(targetSet) || !setToConstraints.containsKey(targetSet)) {
+            return result;
+        }
+
         sets.get(targetSet).remove(delChange.getContext());
 
         Set<String> related = setToConstraints.get(targetSet);

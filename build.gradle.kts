@@ -1,5 +1,6 @@
 allprojects {
     repositories {
+        mavenCentral()
         maven {
             url = uri("https://repo.nju.edu.cn/repository/maven/")
         }
